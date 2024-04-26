@@ -12,11 +12,10 @@ def parse_line(line: str) -> Tuple[List[float], List[float]]:
         tuple of input list and output list
     """
     tokens = line.split(",")
-    out = int(tokens[0])
-    output = [0 if out == 1 else 0.5 if out == 2 else 1]
+    out = [int(tokens[len(tokens) - 1])]
 
-    inpt = [float(x) for x in tokens[1:]]
-    return (inpt, output)
+    inpt = [float(x) for x in tokens[:len(tokens) - 1]]
+    return (inpt, out)
 
 
 def normalize(data: List[Tuple[List[float], List[float]]]):
@@ -45,7 +44,7 @@ def normalize(data: List[Tuple[List[float], List[float]]]):
     return data
 
 
-with open("wine_data.txt", "r") as f:
+with open("data/spambase.data", "r") as f:
     training_data = [parse_line(line) for line in f.readlines() if len(line) > 4]
 
 # print(training_data)
@@ -54,9 +53,17 @@ td = normalize(training_data)
 
 train, test = train_test_split(td)
 
-nn = NeuralNet(13, 3, 1)
-nn.train(train, iters=10000, print_interval=1000, learning_rate=0.2)
+nn = NeuralNet(57, 26, 1)
+nn.train(train, iters=100, print_interval=1, learning_rate=0.5)
 
 for i in nn.test_with_expected(test):
-    difference = round(abs(i[1][0] - i[2][0]), 3)
-    print(f"desired: {i[1]}, actual: {i[2]} diff: {difference}")
+    actual = i[1][0]
+    predicted = i[2][0]
+    confidence = math.abs((0.5 - round(abs(predicted - actual), 3)) / 0.5) * 100
+
+    actual = "Spam" if actual == 1 else "Not Spam"
+    predicted = "Spam" if predicted == 1 else "Not Spam"
+
+    print(f"-------------------------------------------")
+    print(f"Predicted Classification: {predicted} with {confidence}% Confidence")
+    print(f"Actual Classification: {actual}")
