@@ -59,7 +59,7 @@ nn.train(train, iters=100, print_interval=1, learning_rate=0.5)
 for i in nn.test_with_expected(test):
     actual = i[1][0]
     predicted = i[2][0]
-    confidence = math.abs((0.5 - round(abs(predicted - actual), 3)) / 0.5) * 100
+    confidence = abs((0.5 - round(abs(predicted - actual), 3)) / 0.5) * 100
 
     actual = "Spam" if actual == 1 else "Not Spam"
     predicted = "Spam" if predicted == 1 else "Not Spam"
