@@ -1,3 +1,5 @@
+# Mascis Larson and Michael Marsico
+
 from typing import Tuple
 from neural import *
 from sklearn.model_selection import train_test_split
